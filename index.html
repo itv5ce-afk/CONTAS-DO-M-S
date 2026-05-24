@@ -1,0 +1,404 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ITVContas1.3.1</title>
+    <style>
+        :root {
+            --primary: #6c5ce7;
+            --secondary: #a29bfe;
+            --danger: #ff7675;
+            --success: #55efc4;
+            --dark: #2d3436;
+            --bg-gradient: linear-gradient(135deg, #0f0c29, #302b63, #24243e);
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 0;
+            background: var(--bg-gradient);
+            background-attachment: fixed;
+            color: white;
+            min-height: 100vh;
+        }
+
+        #lock-screen {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.95);
+            display: none;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+            text-align: center;
+        }
+
+        .container {
+            max-width: 500px;
+            margin: auto;
+            padding: 20px;
+        }
+
+        header {
+            text-align: center;
+            padding: 20px 0;
+        }
+
+        .admin-panel {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            padding: 20px;
+            border-radius: 15px;
+            margin-bottom: 20px;
+            border: 1px solid rgba(255,255,255,0.1);
+        }
+
+        .salary-section {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+
+        .nav-buttons {
+            display: flex;
+            justify-content: space-around;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+
+        button {
+            cursor: pointer;
+            border: none;
+            border-radius: 8px;
+            padding: 10px 15px;
+            font-weight: bold;
+            transition: 0.3s;
+        }
+
+        .btn-small { flex: 1; font-size: 0.8rem; }
+        .btn-add { background: var(--success); color: #000; }
+        .btn-paid { background: #2ecc71; color: white; }
+        .btn-pending { background: var(--danger); color: white; }
+        .btn-edit { background: #9b59b6; color: white; } 
+        .btn-del { background: #e74c3c; color: white; } 
+        .btn-pay { background: #3498db; color: white; }
+        .btn-cancel { background: #636e72; color: white; }
+
+        .card {
+            background: rgba(255, 255, 255, 0.95);
+            color: #333;
+            padding: 15px;
+            border-radius: 10px;
+            margin-bottom: 10px;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .card.pago { border-left: 8px solid var(--success); }
+        .card.pendente { border-left: 8px solid var(--danger); }
+
+        input, select {
+            padding: 10px;
+            border-radius: 5px;
+            border: 1px solid #ddd;
+            width: 100%;
+            box-sizing: border-box;
+        }
+
+        .hidden { display: none; }
+        
+        .whatsapp-btn {
+            background: #25d366;
+            color: white;
+            padding: 15px;
+            text-decoration: none;
+            border-radius: 5px;
+            display: inline-block;
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+
+    <div id="lock-screen">
+        <h2>🔒 Aplicativo Bloqueado</h2>
+        <p>Entre em contato com o ADM para liberar o acesso total.</p>
+        <input type="password" id="admin-pass" placeholder="Senha do Administrador" style="width: 80%; margin: 20px 0;">
+        <button onclick="checkUnlockCode()" style="background: var(--primary); color:white;">Desbloquear</button>
+        <br>
+        <a href="https://wa.me/5585996498573" class="whatsapp-btn">WhatsApp +55 85 99649-8573</a>
+    </div>
+
+    <div class="container">
+        <header>
+            <h1>ITVContas1.3.1</h1>
+        </header>
+
+        <section class="admin-panel">
+            <div class="salary-section">
+                <div>
+                    <small>Salário Atual</small>
+                    <div id="salary-display" style="font-size: 1.5rem; font-weight: bold;">R$ 0,00</div>
+                </div>
+                <div>
+                    <small>Saldo Após Contas Pagas</small>
+                    <div id="balance-display" style="color: var(--success); font-weight: bold;">R$ 0,00</div>
+                </div>
+            </div>
+            
+            <div id="salary-input-area">
+                <input type="number" id="salary-input" placeholder="Definir Salário do Mês">
+                <button onclick="setSalary()" style="width: 100%; margin-top: 5px; background: var(--secondary);">Salvar Salário</button>
+            </div>
+            <button id="btn-edit-salary" class="hidden" onclick="enableSalaryEdit()" style="width: 100%; margin-top: 5px; background: #f39c12; color: white;">EDITAR SALÁRIO</button>
+            
+            <hr>
+            <select id="month-filter" onchange="renderBills()">
+                <option value="01">Janeiro</option>
+                <option value="02">Fevereiro</option>
+                <option value="03">Março</option>
+                <option value="04">Abril</option>
+                <option value="05">Maio</option>
+                <option value="06">Junho</option>
+                <option value="07">Julho</option>
+                <option value="08">Agosto</option>
+                <option value="09">Setembro</option>
+                <option value="10">Outubro</option>
+                <option value="11">Novembro</option>
+                <option value="12">Dezembro</option>
+            </select>
+        </section>
+
+        <nav class="nav-buttons">
+            <button class="btn-small btn-add" onclick="toggleForm()">+ NOVO</button>
+            <button class="btn-small btn-paid" onclick="filterType('pago')">PAGO</button>
+            <button class="btn-small btn-pending" onclick="filterType('pendente')">A VENCER</button>
+        </nav>
+
+        <div id="bill-form" class="admin-panel hidden">
+            <h3>Cadastrar Conta</h3>
+            <input type="text" id="bill-name" placeholder="Nome da Conta"><br><br>
+            <input type="date" id="bill-date"><br><br>
+            <input type="number" id="bill-value" placeholder="Valor R$"><br><br>
+            <button onclick="saveBill()" style="background: var(--success); width: 100%;">CADASTRAR</button>
+        </div>
+
+        <div id="edit-form" class="admin-panel hidden">
+            <h3>Editar Conta</h3>
+            <input type="hidden" id="edit-bill-id">
+            <input type="text" id="edit-bill-name" placeholder="Nome da Conta"><br><br>
+            <input type="date" id="edit-bill-date"><br><br>
+            <input type="number" id="edit-bill-value" placeholder="Valor R$"><br><br>
+            <div style="display: flex; gap: 10px;">
+                <button onclick="updateBill()" style="background: var(--success); flex: 2;">SALVAR ALTERAÇÕES</button>
+                <button onclick="toggleEditForm()" class="btn-cancel" style="flex: 1;">CANCELAR</button>
+            </div>
+        </div>
+
+        <div id="bills-container"></div>
+    </div>
+
+    <script>
+        let bills = JSON.parse(localStorage.getItem('itv_bills')) || [];
+        let salaries = JSON.parse(localStorage.getItem('itv_salaries')) || {};
+        let unlockDate = localStorage.getItem('itv_unlock');
+        let currentFilter = 'all';
+
+        // Define o mês atual como padrão no select ao carregar
+        window.onload = function() {
+            const currentMonth = String(new Date().getMonth() + 1).padStart(2, '0');
+            document.getElementById('month-filter').value = currentMonth;
+            renderBills();
+        };
+
+        function checkLock() {
+            const now = new Date().getTime();
+            if (bills.length >= 4 && (!unlockDate || now > unlockDate)) {
+                document.getElementById('lock-screen').style.display = 'flex';
+            }
+        }
+
+        function checkUnlockCode() {
+            const pass = document.getElementById('admin-pass').value;
+            if (pass === 'itv2026001') {
+                const expiry = new Date().getTime() + (335 * 24 * 60 * 60 * 1000);
+                localStorage.setItem('itv_unlock', expiry);
+                location.reload();
+            } else {
+                alert("Senha incorreta!");
+            }
+        }
+
+        function enableSalaryEdit() {
+            document.getElementById('salary-input-area').classList.remove('hidden');
+            document.getElementById('btn-edit-salary').classList.add('hidden');
+            const month = document.getElementById('month-filter').value;
+            document.getElementById('salary-input').value = salaries[month] || '';
+        }
+
+        function setSalary() {
+            const month = document.getElementById('month-filter').value;
+            const val = document.getElementById('salary-input').value;
+            
+            if (!val || val <= 0) {
+                alert("Insira um valor válido.");
+                return;
+            }
+
+            salaries[month] = parseFloat(val);
+            localStorage.setItem('itv_salaries', JSON.stringify(salaries));
+            renderBills();
+        }
+
+        function toggleForm() {
+            document.getElementById('bill-form').classList.toggle('hidden');
+            document.getElementById('edit-form').classList.add('hidden');
+        }
+
+        function toggleEditForm() {
+            document.getElementById('edit-form').classList.toggle('hidden');
+            document.getElementById('bill-form').classList.add('hidden');
+        }
+
+        function saveBill() {
+            const name = document.getElementById('bill-name').value;
+            const date = document.getElementById('bill-date').value;
+            const value = document.getElementById('bill-value').value;
+
+            if(!name || !date || !value) return alert("Preencha todos os campos");
+
+            const bill = {
+                id: Date.now(),
+                name: name,
+                date: date,
+                value: parseFloat(value),
+                status: 'pendente',
+                month: date.split('-')[1]
+            };
+            
+            bills.push(bill);
+            localStorage.setItem('itv_bills', JSON.stringify(bills));
+            toggleForm();
+            renderBills();
+            checkLock();
+        }
+
+        function editBill(id) {
+            const bill = bills.find(b => b.id === id);
+            if (!bill) return;
+
+            document.getElementById('edit-bill-id').value = bill.id;
+            document.getElementById('edit-bill-name').value = bill.name;
+            document.getElementById('edit-bill-date').value = bill.date;
+            document.getElementById('edit-bill-value').value = bill.value;
+
+            document.getElementById('edit-form').classList.remove('hidden');
+            document.getElementById('bill-form').classList.add('hidden');
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        function updateBill() {
+            const id = parseInt(document.getElementById('edit-bill-id').value);
+            const index = bills.findIndex(b => b.id === id);
+
+            if (index !== -1) {
+                bills[index].name = document.getElementById('edit-bill-name').value;
+                bills[index].date = document.getElementById('edit-bill-date').value;
+                bills[index].value = parseFloat(document.getElementById('edit-bill-value').value);
+                bills[index].month = bills[index].date.split('-')[1];
+
+                localStorage.setItem('itv_bills', JSON.stringify(bills));
+                toggleEditForm();
+                renderBills();
+            }
+        }
+
+        function markAsPaid(id) {
+            const bill = bills.find(b => b.id === id);
+            bill.status = 'pago';
+            
+            const nextDate = new Date(bill.date);
+            nextDate.setMonth(nextDate.getMonth() + 1);
+            
+            const nextBill = {
+                ...bill,
+                id: Date.now() + 1,
+                date: nextDate.toISOString().split('T')[0],
+                status: 'pendente',
+                month: String(nextDate.getMonth() + 1).padStart(2, '0')
+            };
+            
+            bills.push(nextBill);
+            localStorage.setItem('itv_bills', JSON.stringify(bills));
+            renderBills();
+        }
+
+        function deleteBill(id) {
+            if(confirm("Tem certeza que deseja excluir esta conta?")) {
+                bills = bills.filter(b => b.id !== id);
+                localStorage.setItem('itv_bills', JSON.stringify(bills));
+                renderBills();
+            }
+        }
+
+        function filterType(type) {
+            currentFilter = type;
+            renderBills();
+        }
+
+        function renderBills() {
+            const container = document.getElementById('bills-container');
+            const selectedMonth = document.getElementById('month-filter').value;
+            container.innerHTML = '';
+
+            const monthlySalary = salaries[selectedMonth] || 0;
+            document.getElementById('salary-display').innerText = `R$ ${monthlySalary.toFixed(2)}`;
+            
+            if (monthlySalary > 0) {
+                document.getElementById('salary-input-area').classList.add('hidden');
+                document.getElementById('btn-edit-salary').classList.remove('hidden');
+            } else {
+                document.getElementById('salary-input-area').classList.remove('hidden');
+                document.getElementById('btn-edit-salary').classList.add('hidden');
+            }
+
+            let totalPaid = 0;
+            const filtered = bills.filter(b => {
+                const monthMatch = b.month === selectedMonth;
+                const statusMatch = currentFilter === 'all' || b.status === currentFilter;
+                return monthMatch && statusMatch;
+            });
+
+            filtered.forEach(bill => {
+                if (bill.status === 'pago') totalPaid += bill.value;
+
+                const div = document.createElement('div');
+                div.className = `card ${bill.status}`;
+                div.innerHTML = `
+                    <div>
+                        <strong style="font-size:1.2rem">${bill.name}</strong><br>
+                        <small>${bill.date.split('-').reverse().join('/')}</small>
+                        <div style="color:${bill.status === 'pago' ? 'green' : 'red'}; font-weight:bold">
+                            R$ ${bill.value.toFixed(2)}
+                        </div>
+                    </div>
+                    <div style="display:flex; gap:5px">
+                        ${bill.status === 'pendente' ? `<button class="btn-pay" onclick="markAsPaid(${bill.id})">PAGAR</button>` : ''}
+                        <button class="btn-edit" onclick="editBill(${bill.id})">EDITAR</button>
+                        <button class="btn-del" onclick="deleteBill(${bill.id})">EXCLUIR</button>
+                    </div>
+                `;
+                container.appendChild(div);
+            });
+
+            document.getElementById('balance-display').innerText = `R$ ${(monthlySalary - totalPaid).toFixed(2)}`;
+            checkLock();
+        }
+    </script>
+</body>
+</html>
