@@ -96,8 +96,7 @@
 
         .btn-auth { background: var(--primary); color: white; }
         .btn-auth:hover { background: #5a4bd8; }
-        .auth-message {
-            margin-top: 15px;
+        .auth-message {            margin-top: 15px;
             padding: 10px;
             border-radius: 8px;
             font-size: 0.9rem;
@@ -145,8 +144,8 @@
 
         .admin-panel {
             background: rgba(255, 255, 255, 0.1);
-            backdrop-filter: blur(10px);            padding: 20px;
-            border-radius: 15px;
+            backdrop-filter: blur(10px);
+            padding: 20px;            border-radius: 15px;
             margin-bottom: 20px;
             border: 1px solid rgba(255,255,255,0.1);
         }
@@ -194,8 +193,8 @@
             margin-bottom: 10px;
             display: flex;
             flex-direction: column;
-            gap: 10px;        }
-        .card.pago { border-left: 8px solid var(--success); }
+            gap: 10px;
+        }        .card.pago { border-left: 8px solid var(--success); }
         .card.pendente { border-left: 8px solid var(--danger); }
 
         input, select {
@@ -220,7 +219,6 @@
         }
         .whatsapp-btn:hover { background: #128c7e; }
 
-        /* Indicador de sincronização */
         .sync-status {
             text-align: center;
             font-size: 0.75rem;
@@ -231,7 +229,6 @@
         .sync-status.synced { color: var(--success); }
         .sync-status.error { color: var(--danger); }
 
-        /* Responsividade */
         @media (max-width: 480px) {
             .salary-section { flex-direction: column; align-items: flex-start; }
             .nav-buttons { flex-direction: column; }
@@ -242,24 +239,22 @@
 </head>
 <body>
 
-    <!-- 🔐 TELA DE AUTENTICAÇÃO (NOVO) -->
-    <div id="auth-screen" class="active">        <div class="auth-container">
+    <!-- 🔐 TELA DE AUTENTICAÇÃO -->
+    <div id="auth-screen" class="active">
+        <div class="auth-container">
             <h2 style="margin-bottom: 5px;">🔐 ITVContas</h2>
-            <p style="margin: 0 0 20px; opacity: 0.9;">Acesse sua conta</p>
-            
+            <p style="margin: 0 0 20px; opacity: 0.9;">Acesse sua conta</p>            
             <div class="auth-tabs">
                 <button class="auth-tab active" onclick="switchAuthTab('login')">Entrar</button>
                 <button class="auth-tab" onclick="switchAuthTab('register')">Cadastrar</button>
             </div>
 
-            <!-- Formulário de Login -->
             <form id="login-form" class="auth-form" onsubmit="handleLogin(event)">
                 <input type="email" id="login-email" placeholder="E-mail" required>
                 <input type="password" id="login-pass" placeholder="Senha" required minlength="6">
                 <button type="submit" class="btn-auth">ENTRAR</button>
             </form>
 
-            <!-- Formulário de Cadastro -->
             <form id="register-form" class="auth-form hidden" onsubmit="handleRegister(event)">
                 <input type="text" id="register-name" placeholder="Seu nome" required>
                 <input type="email" id="register-email" placeholder="E-mail" required>
@@ -276,7 +271,7 @@
         </div>
     </div>
 
-    <!-- 🔒 TELA DE BLOQUEIO (EXISTENTE - Mantida) -->
+    <!-- 🔒 TELA DE BLOQUEIO -->
     <div id="lock-screen">
         <h2>🔒 Aplicativo Bloqueado</h2>
         <p>Entre em contato com o ADM para liberar o acesso total.</p>
@@ -286,18 +281,18 @@
         <a href="https://wa.me/5585996498573" class="whatsapp-btn">WhatsApp +55 85 99649-8573</a>
     </div>
 
-    <!-- CONTEÚDO PRINCIPAL DO APP -->
+    <!-- CONTEÚDO PRINCIPAL -->
     <div class="container" id="main-app" style="display: none;">
         <header>
             <h1>ITVContas1.3.1</h1>
             <div class="user-info">
                 <span id="user-display">Usuário</span>
-                <button class="btn-logout" onclick="handleLogout()">Sair</button>            </div>
+                <button class="btn-logout" onclick="handleLogout()">Sair</button>
+            </div>
             <div id="sync-status" class="sync-status">🔄 Carregando dados...</div>
         </header>
 
-        <section class="admin-panel">
-            <div class="salary-section">
+        <section class="admin-panel">            <div class="salary-section">
                 <div>
                     <small>Salário Atual</small>
                     <div id="salary-display" style="font-size: 1.5rem; font-weight: bold;">R$ 0,00</div>
@@ -309,7 +304,7 @@
             </div>
             
             <div id="salary-input-area">
-                <input type="number" id="salary-input" placeholder="Definir Salário do Mês">
+                <input type="number" id="salary-input" placeholder="Definir Salário do Mês" step="0.01" min="0" max="9999999.99">
                 <button onclick="setSalary()" style="width: 100%; margin-top: 5px; background: var(--secondary);">Salvar Salário</button>
             </div>
             <button id="btn-edit-salary" class="hidden" onclick="enableSalaryEdit()" style="width: 100%; margin-top: 5px; background: #f39c12; color: white;">EDITAR SALÁRIO</button>
@@ -339,17 +334,17 @@
 
         <div id="bill-form" class="admin-panel hidden">
             <h3>Cadastrar Conta</h3>
-            <input type="text" id="bill-name" placeholder="Nome da Conta"><br><br>
+            <input type="text" id="bill-name" placeholder="Nome da Conta" maxlength="100"><br><br>
             <input type="date" id="bill-date"><br><br>
-            <input type="number" id="bill-value" placeholder="Valor R$"><br><br>            <button onclick="saveBill()" style="background: var(--success); width: 100%;">CADASTRAR</button>
+            <input type="number" id="bill-value" placeholder="Valor R$" step="0.01" min="0" max="999999.99"><br><br>
+            <button onclick="saveBill()" style="background: var(--success); width: 100%;">CADASTRAR</button>
         </div>
 
         <div id="edit-form" class="admin-panel hidden">
-            <h3>Editar Conta</h3>
-            <input type="hidden" id="edit-bill-id">
-            <input type="text" id="edit-bill-name" placeholder="Nome da Conta"><br><br>
+            <h3>Editar Conta</h3>            <input type="hidden" id="edit-bill-id">
+            <input type="text" id="edit-bill-name" placeholder="Nome da Conta" maxlength="100"><br><br>
             <input type="date" id="edit-bill-date"><br><br>
-            <input type="number" id="edit-bill-value" placeholder="Valor R$"><br><br>
+            <input type="number" id="edit-bill-value" placeholder="Valor R$" step="0.01" min="0" max="999999.99"><br><br>
             <div style="display: flex; gap: 10px;">
                 <button onclick="updateBill()" style="background: var(--success); flex: 2;">SALVAR ALTERAÇÕES</button>
                 <button onclick="toggleEditForm()" class="btn-cancel" style="flex: 1;">CANCELAR</button>
@@ -359,7 +354,7 @@
         <div id="bills-container"></div>
     </div>
 
-    <!-- Firebase SDKs (Compat version) -->
+    <!-- Firebase SDKs -->
     <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-auth-compat.js"></script>
@@ -377,7 +372,6 @@
             appId: "1:508965274192:web:a22c404693bed8dd650755"
         };
 
-        // Inicializa Firebase
         let db = null, auth = null;
         let currentUser = null;
         
@@ -390,16 +384,16 @@
             console.error("❌ Erro ao inicializar Firebase:", error);
             updateSyncStatus("⚠️ Modo offline ativado", "error");
         }
+
         // ============================================
-        // VARIÁVEIS GLOBAIS (mantidas)
+        // VARIÁVEIS GLOBAIS
         // ============================================
         let bills = [];
         let salaries = {};
-        let unlockDate = null;
-        let currentFilter = 'all';
+        let unlockDate = null;        let currentFilter = 'all';
 
         // ============================================
-        // FUNÇÕES DE AUTENTICAÇÃO (NOVO)
+        // FUNÇÕES DE AUTENTICAÇÃO
         // ============================================
         
         function switchAuthTab(tab) {
@@ -445,25 +439,20 @@
             }
 
             try {
-                showAuthMessage("⏳ Criando conta...", "success");
-                
-                // Cria usuário no Firebase Auth
+                showAuthMessage("⏳ Criando conta...", "success");                
                 const userCredential = await auth.createUserWithEmailAndPassword(email, pass);
                 const user = userCredential.user;
                 
-                // Salva nome do usuário no perfil
                 await user.updateProfile({ displayName: name });
                 
-                // Cria documento inicial no Firestore para este usuário
                 await db.collection('users').doc(user.uid).set({
                     displayName: name,
                     email: email,
                     createdAt: firebase.firestore.FieldValue.serverTimestamp()
-                });
+                }, { merge: true });
                 
                 showAuthMessage("✅ Cadastro realizado com sucesso!", "success");
                 
-                // Aguarda e carrega app
                 setTimeout(() => {
                     document.getElementById('auth-screen').classList.remove('active');
                     document.getElementById('main-app').style.display = 'block';
@@ -488,9 +477,7 @@
 
             try {
                 showAuthMessage("⏳ Entrando...", "success");
-                                await auth.signInWithEmailAndPassword(email, pass);
-                // onAuthStateChanged cuidará do redirecionamento
-                
+                await auth.signInWithEmailAndPassword(email, pass);
             } catch (error) {
                 console.error("Erro no login:", error);
                 let msg = "❌ Erro ao entrar. Verifique e-mail e senha.";
@@ -501,23 +488,19 @@
                 showAuthMessage(msg, "error");
             }
         }
-
         async function handleLogout() {
             try {
                 await auth.signOut();
-                // Limpa dados locais do usuário anterior
                 localStorage.removeItem('itv_bills');
                 localStorage.removeItem('itv_salaries');
                 localStorage.removeItem('itv_unlock');
                 
-                // Reseta interface
                 document.getElementById('main-app').style.display = 'none';
                 document.getElementById('auth-screen').classList.add('active');
                 document.getElementById('login-form').reset();
                 document.getElementById('register-form').reset();
                 hideAuthMessage();
                 
-                // Reseta variáveis
                 bills = [];
                 salaries = {};
                 currentUser = null;
@@ -529,21 +512,18 @@
             }
         }
 
-        // Monitora estado de autenticação
         auth?.onAuthStateChanged(async (user) => {
             if (user) {
-                // Usuário logado
                 currentUser = user;
                 document.getElementById('user-display').textContent = user.displayName || user.email;
                 document.getElementById('auth-screen').classList.remove('active');
                 document.getElementById('main-app').style.display = 'block';
-                                // Carrega dados específicos deste usuário
+                
                 await loadFromFirestore();
                 renderBills();
                 checkLock();
                 updateSyncStatus("✅ Conectado como " + (user.displayName || user.email), "synced");
             } else {
-                // Usuário deslogado
                 currentUser = null;
                 document.getElementById('main-app').style.display = 'none';
                 document.getElementById('auth-screen').classList.add('active');
@@ -551,18 +531,16 @@
         });
 
         // ============================================
-        // FUNÇÕES DE SINCRONIZAÇÃO COM FIREBASE (ATUALIZADAS)
+        // FUNÇÕES DE SINCRONIZAÇÃO
         // ============================================
         
         function updateSyncStatus(message, status = '') {
             const el = document.getElementById('sync-status');
             if (el) {
-                el.textContent = message;
-                el.className = 'sync-status ' + status;
+                el.textContent = message;                el.className = 'sync-status ' + status;
             }
         }
 
-        // Obtém referência da coleção do usuário atual
         function getUserBillsRef() {
             if(!currentUser || !db) return null;
             return db.collection('users').doc(currentUser.uid).collection('bills');
@@ -575,7 +553,6 @@
 
         async function loadFromFirestore() {
             if (!db || !currentUser) {
-                // Fallback para localStorage se não houver auth
                 bills = JSON.parse(localStorage.getItem('itv_bills')) || [];
                 salaries = JSON.parse(localStorage.getItem('itv_salaries')) || {};
                 unlockDate = localStorage.getItem('itv_unlock');
@@ -586,7 +563,7 @@
             try {
                 updateSyncStatus("🔄 Sincronizando com nuvem...");
                 
-                // Carrega salários do usuário                const salariesRef = getUserSalariesRef();
+                const salariesRef = getUserSalariesRef();
                 const salariesDoc = await salariesRef.get();
                 if (salariesDoc.exists) {
                     const remoteSalaries = salariesDoc.data();
@@ -594,7 +571,6 @@
                     localStorage.setItem('itv_salaries', JSON.stringify(salaries));
                 }
 
-                // Carrega contas do usuário
                 const billsRef = getUserBillsRef();
                 const billsSnapshot = await billsRef.get();
                 if (!billsSnapshot.empty) {
@@ -610,8 +586,7 @@
 
                 updateSyncStatus("✅ Sincronizado com a nuvem", "synced");
                 return true;
-            } catch (error) {
-                console.error("Erro ao carregar do Firestore:", error);
+            } catch (error) {                console.error("Erro ao carregar do Firestore:", error);
                 updateSyncStatus("⚠️ Usando dados locais", "error");
                 bills = JSON.parse(localStorage.getItem('itv_bills')) || [];
                 salaries = JSON.parse(localStorage.getItem('itv_salaries')) || {};
@@ -628,6 +603,10 @@
                 if (operation === 'delete') {
                     await docRef.delete();
                 } else {
+                    // Validação adicional no client-side antes de enviar
+                    if (!isValidBillClient(bill)) {
+                        throw new Error("Dados inválidos para sincronização");
+                    }
                     await docRef.set(bill);
                 }
             } catch (error) {
@@ -635,17 +614,34 @@
                 updateSyncStatus("⚠️ Falha na sincronização", "error");
             }
         }
+
+        // Validação client-side complementar às regras do servidor
+        function isValidBillClient(data) {
+            return data &&
+                   typeof data.name === 'string' && data.name.length > 0 && data.name.length <= 100 &&
+                   typeof data.date === 'string' && /^\d{4}-\d{2}-\d{2}$/.test(data.date) &&
+                   typeof data.value === 'number' && data.value >= 0 && data.value <= 999999.99 &&
+                   (data.status === 'pendente' || data.status === 'pago') &&
+                   typeof data.month === 'string' && /^\d{2}$/.test(data.month);
+        }
+
         async function syncSalariesToFirestore() {
             if (!db || !currentUser) return;
             try {
+                // Validação client-side
+                for (let key in salaries) {
+                    if (!/^\d{2}$/.test(key) || typeof salaries[key] !== 'number' || salaries[key] < 0 || salaries[key] > 9999999.99) {
+                        throw new Error("Dados de salário inválidos");
+                    }
+                }
                 await getUserSalariesRef().set(salaries);
-            } catch (error) {
-                console.error("Erro ao sincronizar salários:", error);
+            } catch (error) {                console.error("Erro ao sincronizar salários:", error);
+                updateSyncStatus("⚠️ Falha ao salvar salário", "error");
             }
         }
 
         // ============================================
-        // FUNÇÕES EXISTENTES (MODIFICADAS PARA SUPORTAR AUTH)
+        // FUNÇÕES DA INTERFACE
         // ============================================
 
         window.onload = async function() {
@@ -653,7 +649,6 @@
             const monthSelect = document.getElementById('month-filter');
             if(monthSelect) monthSelect.value = currentMonth;
             
-            // Se já estiver autenticado, carrega dados
             if (currentUser) {
                 await loadFromFirestore();
                 renderBills();
@@ -662,7 +657,6 @@
         };
 
         function checkLock() {
-            // Só aplica bloqueio se usuário estiver logado
             if (!currentUser) return;
             
             const now = new Date().getTime();
@@ -684,22 +678,22 @@
             }
         }
 
-        function enableSalaryEdit() {            document.getElementById('salary-input-area').classList.remove('hidden');
+        function enableSalaryEdit() {
+            document.getElementById('salary-input-area').classList.remove('hidden');
             document.getElementById('btn-edit-salary').classList.add('hidden');
             const month = document.getElementById('month-filter').value;
             document.getElementById('salary-input').value = salaries[month] || '';
         }
-
         async function setSalary() {
             const month = document.getElementById('month-filter').value;
             const val = document.getElementById('salary-input').value;
             
-            if (!val || val <= 0) {
-                alert("Insira um valor válido.");
+            if (!val || val <= 0 || parseFloat(val) > 9999999.99) {
+                alert("Insira um valor válido (0 a R$ 9.999.999,99).");
                 return;
             }
 
-            salaries[month] = parseFloat(val);
+            salaries[month] = parseFloat(parseFloat(val).toFixed(2));
             localStorage.setItem('itv_salaries', JSON.stringify(salaries));
             
             await syncSalariesToFirestore();
@@ -719,17 +713,23 @@
         }
 
         async function saveBill() {
-            const name = document.getElementById('bill-name').value;
+            const name = document.getElementById('bill-name').value.trim();
             const date = document.getElementById('bill-date').value;
             const value = document.getElementById('bill-value').value;
 
             if(!name || !date || !value) return alert("Preencha todos os campos");
+            
+            const numValue = parseFloat(value);
+            if(isNaN(numValue) || numValue < 0 || numValue > 999999.99) {
+                return alert("Valor inválido (0 a R$ 999.999,99)");
+            }
+            if(name.length > 100) return alert("Nome muito longo (máx 100 caracteres)");
 
             const bill = {
                 id: Date.now(),
                 name: name,
                 date: date,
-                value: parseFloat(value),
+                value: numValue,
                 status: 'pendente',
                 month: date.split('-')[1]
             };
@@ -766,15 +766,23 @@
             const index = bills.findIndex(b => b.id === id);
 
             if (index !== -1) {
-                bills[index].name = document.getElementById('edit-bill-name').value;
-                bills[index].date = document.getElementById('edit-bill-date').value;
-                bills[index].value = parseFloat(document.getElementById('edit-bill-value').value);
-                bills[index].month = bills[index].date.split('-')[1];
+                const name = document.getElementById('edit-bill-name').value.trim();
+                const date = document.getElementById('edit-bill-date').value;
+                const value = parseFloat(document.getElementById('edit-bill-value').value);
+                
+                if(!name || !date || isNaN(value) || value < 0 || value > 999999.99) {
+                    return alert("Dados inválidos para atualização");
+                }
+                if(name.length > 100) return alert("Nome muito longo");
+
+                bills[index].name = name;
+                bills[index].date = date;
+                bills[index].value = value;
+                bills[index].month = date.split('-')[1];
 
                 localStorage.setItem('itv_bills', JSON.stringify(bills));
                 
-                await syncBillToFirestore(bills[index], 'set');
-                
+                await syncBillToFirestore(bills[index], 'set');                
                 toggleEditForm();
                 renderBills();
                 updateSyncStatus("💾 Alterações salvas na nuvem", "synced");
@@ -782,7 +790,8 @@
         }
 
         async function markAsPaid(id) {
-            const bill = bills.find(b => b.id === id);            if (!bill) return;
+            const bill = bills.find(b => b.id === id);
+            if (!bill) return;
             
             bill.status = 'pago';
             
@@ -823,7 +832,6 @@
             currentFilter = type;
             renderBills();
         }
-
         function renderBills() {
             const container = document.getElementById('bills-container');
             if(!container) return;
@@ -831,7 +839,8 @@
             const selectedMonth = document.getElementById('month-filter').value;
             container.innerHTML = '';
 
-            const monthlySalary = salaries[selectedMonth] || 0;            document.getElementById('salary-display').innerText = `R$ ${monthlySalary.toFixed(2)}`;
+            const monthlySalary = salaries[selectedMonth] || 0;
+            document.getElementById('salary-display').innerText = `R$ ${monthlySalary.toFixed(2)}`;
             
             if (monthlySalary > 0) {
                 document.getElementById('salary-input-area').classList.add('hidden');
@@ -871,8 +880,7 @@
             });
 
             document.getElementById('balance-display').innerText = `R$ ${(monthlySalary - totalPaid).toFixed(2)}`;
-            checkLock();
-        }
+            checkLock();        }
     </script>
 </body>
 </html>
