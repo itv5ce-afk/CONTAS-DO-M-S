@@ -271,7 +271,7 @@
         </div>
     </div>
 
-    <!-- 🔒 TELA DE BLOQUEIO -->
+    <!-- 🔒 TELA DE BLOQUEIO (mantida estruturalmente, mas sem restrição) -->
     <div id="lock-screen">
         <h2>🔒 Aplicativo Bloqueado</h2>
         <p>Entre em contato com o ADM para liberar o acesso total.</p>
@@ -603,7 +603,6 @@
                 if (operation === 'delete') {
                     await docRef.delete();
                 } else {
-                    // Validação adicional no client-side antes de enviar
                     if (!isValidBillClient(bill)) {
                         throw new Error("Dados inválidos para sincronização");
                     }
@@ -615,7 +614,6 @@
             }
         }
 
-        // Validação client-side complementar às regras do servidor
         function isValidBillClient(data) {
             return data &&
                    typeof data.name === 'string' && data.name.length > 0 && data.name.length <= 100 &&
@@ -628,7 +626,6 @@
         async function syncSalariesToFirestore() {
             if (!db || !currentUser) return;
             try {
-                // Validação client-side
                 for (let key in salaries) {
                     if (!/^\d{2}$/.test(key) || typeof salaries[key] !== 'number' || salaries[key] < 0 || salaries[key] > 9999999.99) {
                         throw new Error("Dados de salário inválidos");
@@ -656,13 +653,23 @@
             }
         };
 
+        // ==========================================================
+        // RESTRIÇÃO DE LIMITE DE CADASTRO REMOVIDA
+        // ==========================================================
+        // A função checkLock() foi modificada para nunca exibir a tela de bloqueio,
+        // removendo completamente a limitação de cadastros baseada no número de contas.
+        // A estrutura da tela de bloqueio foi mantida, mas nunca será acionada.
         function checkLock() {
-            if (!currentUser) return;
+            // RESTRIÇÃO DE LIMITE DE CADASTRO REMOVIDA
+            // O sistema agora permite cadastrar quantas contas o usuário desejar.
+            // A chamada da tela de bloqueio foi desativada.
+            return; // Nenhuma verificação ou bloqueio será aplicado.
             
-            const now = new Date().getTime();
-            if (bills.length >= 4 && (!unlockDate || now > unlockDate)) {
-                document.getElementById('lock-screen').style.display = 'flex';
-            }
+            // Código original comentado para referência:
+            // const now = new Date().getTime();
+            // if (bills.length >= 4 && (!unlockDate || now > unlockDate)) {
+            //     document.getElementById('lock-screen').style.display = 'flex';
+            // }
         }
 
         function checkUnlockCode() {
