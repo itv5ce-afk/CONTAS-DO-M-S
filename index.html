@@ -594,8 +594,10 @@
             <div class="balance-item"><div class="balance-label">💳 Cartão de crédito <button class="edit-balance" onclick="editExtraBalance('credit')">✏️</button></div><div class="balance-amount negative" id="credit-balance">-R$ 0,00</div></div>
             <div class="balance-item"><div class="balance-label">📈 Investimentos <button class="edit-balance" onclick="editExtraBalance('invest')">✏️</button></div><div class="balance-amount" id="invest-balance">R$ 0,00</div></div>
         </div>
-        <div style="display:flex; justify-content:space-between; margin-bottom: 8px;"><h3>📅 Próximos Pagamentos</h3><button class="btn-view-all" onclick="scrollToBills()" style="background:none; border:none; color:var(--primary); cursor:pointer;">Ver todos →</button></div>
-        <div id="upcoming-list" class="upcoming-list"></div>
+
+        <!-- PRÓXIMOS PAGAMENTOS - OCULTADO -->
+        <div style="display:flex; justify-content:space-between; margin-bottom: 8px; display: none;"><h3>📅 Próximos Pagamentos</h3><button class="btn-view-all" onclick="scrollToBills()" style="background:none; border:none; color:var(--primary); cursor:pointer;">Ver todos →</button></div>
+        <div id="upcoming-list" class="upcoming-list" style="display: none;"></div>
 
         <!-- ESTE MÊS vs PERÍODO ANTERIOR - OCULTADO -->
         <div class="expense-stats" style="display: none;">
